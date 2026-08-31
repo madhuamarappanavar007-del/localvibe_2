@@ -284,7 +284,7 @@ Database (MongoDB Atlas)
    NODE_ENV=production
    PORT=5000
    MONGODB_URI=mongodb+srv://<prod-user>:<prod-password>@cluster.mongodb.net/localvibe?retryWrites=true&w=majority
-   FRONTEND_URL=https://your-frontend-domain.vercel.app
+   FRONTEND_URL=https://localvibe-frontend-a2x1.onrender.com
    ```
 
 3. **MongoDB Atlas Configuration**
@@ -306,9 +306,9 @@ Database (MongoDB Atlas)
    - Build command: `npm run build --prefix frontend`
    - Output directory: `frontend/dist`
 
-3. **Environment Variables** (Vercel Dashboard)
+3. **Environment Variables** (Vercel/Render Dashboard)
    ```
-   VITE_API_URL=https://your-backend-domain.onrender.com/api
+   VITE_API_URL=https://localvibe-backend-2026.onrender.com/api
    ```
    OR leave empty if using same-origin deployment.
 
