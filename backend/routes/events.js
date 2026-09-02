@@ -42,10 +42,11 @@ function validateRadius(radius) {
 
 function parseEndDateFilter(value) {
   if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return new Date(`${value}T23:59:59.999Z`);
+    const date = new Date(`${value}T23:59:59.999Z`);
+    return Number.isNaN(date.getTime()) ? null : date;
   }
 
-  return new Date(value);
+  return parseDate(value);
 }
 
 function parseDate(value) {
@@ -70,10 +71,25 @@ function buildEventQuery(filters = {}) {
   }
 
   if (filters.startDate) {
-    query.startDate = { ...(query.startDate || {}), $gte: new Date(filters.startDate) };
+    const startDate = parseDate(filters.startDate);
+    if (!startDate) {
+      return { error: 'Invalid startDate' };
+    }
+    query.startDate = { ...(query.startDate || {}), $gte: startDate };
   }
   if (filters.endDate) {
-    query.endDate = { ...(query.endDate || {}), $lte: parseEndDateFilter(filters.endDate) };
+    const endDate = parseEndDateFilter(filters.endDate);
+    if (!endDate) {
+      return { error: 'Invalid endDate' };
+    }
+    query.endDate = { ...(query.endDate || {}), $lte: endDate };
+  }
+
+  if (filters.price !== undefined && filters.price !== '') {
+    const price = Number(filters.price);
+    if (!Number.isNaN(price)) {
+      query.price = price;
+    }
   }
 
   if (filters.minPrice !== undefined && filters.minPrice !== '') {
@@ -92,6 +108,8 @@ function buildEventQuery(filters = {}) {
 
   if (filters.featured === 'true') {
     query.isFeatured = true;
+  } else if (filters.featured === 'false') {
+    query.isFeatured = false;
   }
 
   return query;
@@ -126,6 +144,9 @@ router.get('/nearby', async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
 
     const filters = buildEventQuery(req.query);
+    if (filters.error) {
+      return res.status(400).json({ error: filters.error });
+    }
     const events = await Event.find({
       ...filters,
       'location.coordinates': {
@@ -203,6 +224,9 @@ router.get('/recommendations/:userId', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const filters = buildEventQuery(req.query);
+    if (filters.error) {
+      return res.status(400).json({ error: filters.error });
+    }
     if (!filters.startDate) {
       filters.startDate = { $gte: new Date() };
     }

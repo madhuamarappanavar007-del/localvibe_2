@@ -313,6 +313,20 @@ const seedEvents = [
     isFeatured: true,
     image: makeLocalImage('Food', 'Jayanagar Food Street Night'),
   },
+  {
+    title: 'Bengaluru Tech Meetup',
+    description: 'Monthly gathering for developers and tech enthusiasts to discuss latest trends in AI, cloud computing, and open source.',
+    city: 'Bengaluru',
+    address: 'Koramangala 4th Block, Bengaluru, Karnataka 560034',
+    lat: 12.9352,
+    lng: 77.6245,
+    category: 'Technology',
+    price: 0,
+    daysFromNow: 3,
+    durationHours: 2,
+    isFeatured: true,
+    image: makeLocalImage('Technology', 'Bengaluru Tech Meetup'),
+  },
 ];
 
 function addDays(days) {

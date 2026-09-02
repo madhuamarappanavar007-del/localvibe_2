@@ -81,6 +81,15 @@ router.post('/:id/follow/:targetId', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    const targetUser = await User.findById(targetId);
+    if (!targetUser) {
+      return res.status(404).json({ error: 'Target user not found' });
+    }
+
+    if (id === targetId) {
+      return res.status(400).json({ error: 'Cannot follow yourself' });
+    }
+
     if (!user.following.some((followId) => followId.toString() === targetId)) {
       user.following.push(targetId);
       await user.save();
