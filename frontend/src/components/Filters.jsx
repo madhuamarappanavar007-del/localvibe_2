@@ -27,7 +27,6 @@ export default function Filters({ filters, categories, onChange }) {
         <select
           value={filters.category}
           onChange={(e) => onChange({ ...filters, category: e.target.value })}
-          style={{ maxHeight: '200px', overflowY: 'auto' }}
         >
           <option value="">All categories</option>
           {categories.map((c) => (
